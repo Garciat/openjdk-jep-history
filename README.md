@@ -1,5 +1,9 @@
 # openjdk-jep-history
 
+This site tracks the [OpenJDK JEP Index](https://openjdk.org/jeps/0) and publishes an RSS feed that contains individual JEP updates.
+
+Inspired by https://github.com/PerfectSlayer/openjdk-jep-bsky
+
 ## Prerequisites
 
 - [Deno](https://deno.land) installed on your system
