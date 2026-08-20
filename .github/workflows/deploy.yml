@@ -5,7 +5,6 @@ on:
     branches: ["main"]
   pull_request:
   schedule:
-    # Refresh every 6 hours at :17 to avoid the busiest top-of-hour queue.
     - cron: "5 * * * *"
   workflow_dispatch:
 
