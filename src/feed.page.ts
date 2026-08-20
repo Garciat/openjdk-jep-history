@@ -1,7 +1,7 @@
 import * as XML from "@std/xml";
 
 import { formatRssFeed, RssFeed, RssItem } from "lib/rss.ts";
-import { JepIndexItem } from "lib/openjdk-jep/index.ts";
+import { JepIndexItem } from "lib/openjdk-jep/types.ts";
 
 import computeHistory from "./_includes/history.ts";
 
@@ -19,7 +19,7 @@ export default function* (
       items: history.map((record) => ({
         title: formatTitle(record.item),
         link: record.item.url,
-        pubDate: record.updated.toInstant(),
+        pubDate: record.updated,
       } satisfies RssItem)),
     }],
   } satisfies RssFeed;

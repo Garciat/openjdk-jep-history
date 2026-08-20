@@ -1,79 +1,13 @@
 import * as HTML from "npm:node-html-parser@^9.0.1";
 
-const JepTypeShorthandMap = {
-  "P": "process",
-  "I": "informational",
-  "F": "feature",
-  "S": "infrastructure",
-} as const;
-
-type JepTypeShorthand = keyof typeof JepTypeShorthandMap;
-
-export type JepType = (typeof JepTypeShorthandMap)[JepTypeShorthand];
-
-function isJepTypeShorthand(value: string): value is JepTypeShorthand {
-  return value in JepTypeShorthandMap;
-}
-
-function parseJepType(value: string): JepType | undefined {
-  return isJepTypeShorthand(value) ? JepTypeShorthandMap[value] : undefined;
-}
-
-const JepStateShorthandMap = {
-  "Dra": "draft",
-  "Sub": "submitted",
-  "Can": "candidate",
-  "Pro": "proposed-to-target",
-  "Tar": "targeted",
-  "Int": "integrated",
-  "Clo": "closed",
-  "Com": "completed",
-  "Act": "active",
-} as const;
-
-type JepStateShorthand = keyof typeof JepStateShorthandMap;
-
-export type JepState = (typeof JepStateShorthandMap)[JepStateShorthand];
-
-function isJepStateShorthand(value: string): value is JepStateShorthand {
-  return value in JepStateShorthandMap;
-}
-
-function parseJepStateShorthand(value: string): JepState | undefined {
-  return isJepStateShorthand(value) ? JepStateShorthandMap[value] : undefined;
-}
-
-export interface JepIndexMetadata {
-  created: Temporal.ZonedDateTime;
-  updated: Temporal.ZonedDateTime;
-}
-
-export interface JepIndexItem {
-  category: string;
-  type: JepType;
-  state: JepState;
-  area: string | undefined;
-  component: string | undefined;
-  release: string | undefined;
-  jep: string;
-  title: string;
-  url: URL;
-}
-
-export interface JepIndex {
-  metadata: JepIndexMetadata;
-  items: JepIndexItem[];
-}
-
-export interface JepIndexItemStateDelta {
-  // undefined if new item
-  previousState: JepState | undefined;
-
-  item: JepIndexItem;
-
-  // actually just a guess
-  updated: Temporal.ZonedDateTime;
-}
+import {
+  JepIndex,
+  JepIndexItem,
+  JepIndexItemStateDelta,
+  JepIndexMetadata,
+  JepStateShorthandCodec,
+  JepTypeShorthandCodec,
+} from "./types.ts";
 
 export function* computeStateDelta(
   previous: JepIndex | undefined,
@@ -137,14 +71,14 @@ function parseJepIndexMetadata(meta: Map<string, string>): JepIndexMetadata {
   };
 }
 
-// TODO assuming timestamps are UTC
-function parseJepDateTime(value: string): Temporal.ZonedDateTime {
+// NOTE assuming timestamps are UTC
+function parseJepDateTime(value: string): Temporal.Instant {
   const re =
     /^(?<year>\d{4})\/(?<month>\d{2})\/(?<day>\d{2}) (?<hour>\d{2}):(?<minute>\d{2})$/;
 
   const fixed = value.replace(re, "$<year>-$<month>-$<day>T$<hour>:$<minute>");
 
-  return Temporal.PlainDateTime.from(fixed).toZonedDateTime("UTC");
+  return Temporal.PlainDateTime.from(fixed).toZonedDateTime("UTC").toInstant();
 }
 
 function parseJepPageMetadata(root: HTML.HTMLElement): Map<string, string> {
@@ -180,8 +114,8 @@ function* parseJepIndexItems(root: HTML.HTMLElement) {
 
       yield {
         category: tableTitle,
-        type: required(parseJepType(type)),
-        state: required(parseJepStateShorthand(state)),
+        type: required(JepTypeShorthandCodec.parse(type)),
+        state: required(JepStateShorthandCodec.parse(state)),
         area: parseComponent(area),
         component: parseComponent(component),
         release,

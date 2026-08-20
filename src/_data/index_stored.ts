@@ -1,6 +1,7 @@
-import { JepIndex } from "lib/openjdk-jep/index.ts";
+import { JepIndex } from "lib/openjdk-jep/types.ts";
 
 import { SiteConfig } from "../_includes/config.ts";
+import { JepIndexJsonCodec } from "../_includes/types.ts";
 
 export default await (async () => {
   const res = await fetch(
@@ -12,8 +13,7 @@ export default await (async () => {
     return { data: undefined };
   }
 
-  // TODO parse from schema
-  const data = await res.json() as JepIndex;
+  const data = JepIndexJsonCodec.decode(await res.text());
 
   return { data };
 })() satisfies JepPageData["index_stored"];
