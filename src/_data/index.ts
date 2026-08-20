@@ -1,4 +1,5 @@
-import { JepIndex, readJepIndex } from "lib/openjdk-jep/index.ts";
+import { readJepIndex } from "lib/openjdk-jep/index.ts";
+import { JepIndex } from "lib/openjdk-jep/types.ts";
 import { timed } from "lib/timed.ts";
 
 const index = await timed(readJepIndex());

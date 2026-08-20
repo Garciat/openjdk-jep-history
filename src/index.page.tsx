@@ -14,12 +14,23 @@ export default (
 
       <body>
         <h1>OpenJDK JEP History</h1>
-        <p>This site tracks the <a href="https://openjdk.org/jeps/0">OpenJDK JEP Index</a> and publishes a feed that contains individual JEP updates.</p>
+        <p>
+          This site tracks the{" "}
+          <a href="https://openjdk.org/jeps/0">OpenJDK JEP Index</a>{" "}
+          and publishes a feed that contains individual JEP updates.
+        </p>
         <ul>
-          <li><a href={h.url("/feed.xml")}>/feed.xml</a></li>
+          <li>
+            <a href={h.url("/feed.xml")}>/feed.xml</a>
+          </li>
         </ul>
-        <p>Suggestions? Go to <a href="https://github.com/Garciat/openjdk-jep-history">github.com/Garciat/openjdk-jep-history</a></p>
+        <p>
+          Suggestions? Go to{" "}
+          <a href="https://github.com/Garciat/openjdk-jep-history">
+            github.com/Garciat/openjdk-jep-history
+          </a>
+        </p>
       </body>
     </html>
   );
-}
+};
