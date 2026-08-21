@@ -1,3 +1,5 @@
+import { SiteConfig } from "./_includes/config.ts";
+
 export default (
   _page: Lume.Data,
   h: Lume.Helpers,
@@ -17,7 +19,8 @@ export default (
         <p>
           This site tracks the{" "}
           <a href="https://openjdk.org/jeps/0">OpenJDK JEP Index</a>{" "}
-          and publishes a feed that contains individual JEP updates.
+          and publishes a feed that contains individual JEP updates (up to{" "}
+          {SiteConfig.historyLength} items).
         </p>
         <ul>
           <li>

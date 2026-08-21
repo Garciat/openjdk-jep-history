@@ -1,6 +1,7 @@
 import { computeStateDelta } from "lib/openjdk-jep/index.ts";
 
 import { JepHistory } from "./types.ts";
+import { SiteConfig } from "./config.ts";
 
 export default function computeHistory(
   { index, index_stored, history_stored }: Lume.Data<JepPageData>,
@@ -9,5 +10,5 @@ export default function computeHistory(
 
   const history = [...delta, ...history_stored.data];
 
-  return history.slice(0, 50);
+  return history.slice(0, SiteConfig.historyLength);
 }
