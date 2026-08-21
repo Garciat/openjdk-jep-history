@@ -10,19 +10,17 @@ export default function* (
 ): Generator<Partial<Lume.Data>> {
   const history = computeHistory(data);
 
-  const timestamp = Temporal.Now.instant().round("seconds");
-
   const feed = {
     channels: [{
       title: "OpenJDK JEP Updates",
       link: new URL("https://openjdk.org/jeps/0"),
       description: "Provided by https://github.com/Garciat/openjdk-jep-history",
-      lastBuildDate: timestamp,
+      lastBuildDate: Temporal.Now.instant(),
       items: history.map((record) => ({
         title: formatTitle(record.item),
         link: record.item.url,
         guid: {
-          value: `${record.item.url}#${timestamp.toString()}`,
+          value: `${record.item.url}#${record.updated.toString()}`,
           isPermaLink: false,
         },
         pubDate: record.updated,
