@@ -31,25 +31,42 @@ export interface RssChannel {
 export interface RssItem {
   title: string;
   link: URL;
+  guid: RssGuid | undefined;
   pubDate: Temporal.Instant;
-  description?: string;
+}
+
+export interface RssGuid {
+  value: string;
+  isPermaLink: boolean;
 }
 
 export function parseRssFeed(doc: XML.XmlDocument): xod.Safe<RssFeed> {
+  const guid = xod.field(
+    "guid",
+    zod.object({
+      isPermaLink: zod.optional(zod.stringbool()),
+    }),
+    zod.string(),
+    ({ attributes, body }) => ({
+      value: body,
+      isPermaLink: attributes.isPermaLink ?? false,
+    } satisfies RssGuid),
+  );
+
   const item = xod.element(
     "item",
     zod.object(),
     {
       title: xod.optional(xod.text(zod.string())),
       link: xod.one(xod.text(UrlSchema)),
+      guid: xod.one(guid),
       pubDate: xod.one(xod.text(Rfc822Codec)),
-      description: xod.optional(xod.text(zod.string())),
     },
     ({ children }) => ({
       title: children.title ?? "???",
       link: children.link,
+      guid: children.guid,
       pubDate: children.pubDate,
-      description: children.description,
     } satisfies RssItem),
   );
 
@@ -102,11 +119,23 @@ export function formatRssFeed(feed: RssFeed): XML.XmlDocument {
           field("description", {}, channel.description),
           field("lastBuildDate", {}, Rfc822Codec.encode(channel.lastBuildDate)),
           ...channel.items.map((item) =>
-            element("item", {}, [
-              field("title", {}, item.title),
-              field("link", {}, item.link.toString()),
-              field("pubDate", {}, Rfc822Codec.encode(item.pubDate)),
-            ])
+            element(
+              "item",
+              {},
+              Array.from(function* () {
+                yield field("title", {}, item.title);
+                yield field("link", {}, item.link.toString());
+                yield field("pubDate", {}, Rfc822Codec.encode(item.pubDate));
+
+                if (item.guid !== undefined) {
+                  yield field(
+                    "guid",
+                    { isPermaLink: String(item.guid.isPermaLink) },
+                    item.guid.value,
+                  );
+                }
+              }()),
+            )
           ),
         ])
       ),
