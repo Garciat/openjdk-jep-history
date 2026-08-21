@@ -1,7 +1,14 @@
 import { SiteConfig } from "./_includes/config.ts";
 
+const formatTimestamp = (ts: Temporal.Instant) =>
+  ts.toZonedDateTimeISO("utc")
+    .toLocaleString(
+      "en",
+      { dateStyle: "medium", timeStyle: "long", hourCycle: "h24" },
+    );
+
 export default (
-  _page: Lume.Data,
+  data: Lume.Data<JepPageData>,
   h: Lume.Helpers,
 ) => {
   return (
@@ -27,6 +34,16 @@ export default (
             <a href={h.url("/feed.xml")}>/feed.xml</a>
           </li>
         </ul>
+        <dl>
+          <dt>Last JEP Index timestamp</dt>
+          <dd>
+            {formatTimestamp(data.index.metadata.updated)}
+          </dd>
+          <dt>Fetched on</dt>
+          <dd>
+            {formatTimestamp(Temporal.Now.instant())}
+          </dd>
+        </dl>
         <p>
           Suggestions? Go to{" "}
           <a href="https://github.com/Garciat/openjdk-jep-history">
