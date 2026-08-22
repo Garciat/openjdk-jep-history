@@ -7,4 +7,5 @@ export const SiteConfig = {
   storedHistoryPath: "./history.json",
 
   historyLength: 250,
+  historyAnomalyLength: 10,
 } as const;

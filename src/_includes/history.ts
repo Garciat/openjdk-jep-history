@@ -8,6 +8,12 @@ export default function computeHistory(
 ): JepHistory {
   const delta = Array.from(computeStateDelta(index_stored.data, index.parsed));
 
+  if (delta.length > SiteConfig.historyAnomalyLength) {
+    throw new Error(
+      `history anomaly detected: delta bigger than ${SiteConfig.historyAnomalyLength} items`,
+    );
+  }
+
   const history = [...delta, ...history_stored.data];
 
   return history.slice(0, SiteConfig.historyLength);
