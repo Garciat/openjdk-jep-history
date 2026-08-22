@@ -9,6 +9,8 @@ import {
   JepTypeShorthandCodec,
 } from "./types.ts";
 
+export const JEP_INDEX_URL = new URL("https://openjdk.org/jeps/0");
+
 export function* computeStateDelta(
   previous: JepIndex | undefined,
   current: JepIndex,
@@ -39,10 +41,8 @@ export function* computeStateDelta(
   }
 }
 
-export async function readJepIndex(): Promise<JepIndex> {
-  const base = "https://openjdk.org/jeps/0";
-
-  const res = await fetch(base, {
+export async function fetchJepIndex(): Promise<string> {
+  const res = await fetch(JEP_INDEX_URL, {
     headers: {
       "user-agent": "curl/8.14.1",
     },
@@ -52,7 +52,11 @@ export async function readJepIndex(): Promise<JepIndex> {
     throw new Error(`failed to fetch: ${res.status} ${res.statusText}`);
   }
 
-  const doc = HTML.parse(await res.text());
+  return await res.text();
+}
+
+export function parseJepIndex(source: string): JepIndex {
+  const doc = HTML.parse(source);
 
   const metadata = parseJepIndexMetadata(parseJepPageMetadata(doc));
 
@@ -121,7 +125,7 @@ function* parseJepIndexItems(root: HTML.HTMLElement) {
         release,
         jep,
         title,
-        url: new URL(href, "https://openjdk.org/jeps/0"),
+        url: new URL(href, JEP_INDEX_URL),
       } satisfies JepIndexItem;
     }
   }

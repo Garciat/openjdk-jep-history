@@ -6,7 +6,7 @@ import { SiteConfig } from "./config.ts";
 export default function computeHistory(
   { index, index_stored, history_stored }: Lume.Data<JepPageData>,
 ): JepHistory {
-  const delta = Array.from(computeStateDelta(index_stored.data, index));
+  const delta = Array.from(computeStateDelta(index_stored.data, index.parsed));
 
   const history = [...delta, ...history_stored.data];
 

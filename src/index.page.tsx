@@ -37,7 +37,7 @@ export default (
         <dl>
           <dt>Last JEP Index timestamp</dt>
           <dd>
-            {formatTimestamp(data.index.metadata.updated)}
+            {formatTimestamp(data.index.parsed.metadata.updated)}
           </dd>
           <dt>Fetched on</dt>
           <dd>

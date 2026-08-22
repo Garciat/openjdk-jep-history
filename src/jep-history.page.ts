@@ -1,5 +1,6 @@
 import { SiteConfig } from "./_includes/config.ts";
 import computeHistory from "./_includes/history.ts";
+import { JepHistoryJsonCodec } from "./_includes/types.ts";
 
 export default function* (
   data: Lume.Data<JepPageData>,
@@ -8,6 +9,6 @@ export default function* (
 
   yield {
     url: SiteConfig.storedHistoryPath,
-    content: JSON.stringify(history),
+    content: JepHistoryJsonCodec.encode(history),
   };
 }

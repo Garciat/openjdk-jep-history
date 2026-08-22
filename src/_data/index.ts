@@ -1,17 +1,25 @@
-import { readJepIndex } from "lib/openjdk-jep/index.ts";
+import { fetchJepIndex, parseJepIndex } from "lib/openjdk-jep/index.ts";
 import { JepIndex } from "lib/openjdk-jep/types.ts";
 import { timed } from "lib/timed.ts";
 
-const index = await timed(readJepIndex());
+const source = await timed(fetchJepIndex());
 
 console.log(
-  `fetched OpenJDK JEP index in ${index.duration.total("milliseconds")}ms`,
+  `fetched OpenJDK JEP index in ${source.duration.total("milliseconds")}ms`,
 );
 
-export default index.value satisfies JepPageData["index"];
+const index = parseJepIndex(source.value);
+
+export default {
+  source: source.value,
+  parsed: index,
+} satisfies JepPageData["index"];
 
 declare global {
   interface JepPageData {
-    index: JepIndex;
+    index: {
+      source: string;
+      parsed: JepIndex;
+    };
   }
 }
