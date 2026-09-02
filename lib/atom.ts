@@ -1,7 +1,7 @@
 import * as XML from "@std/xml";
 import * as zod from "@zod/zod";
 
-import * as xod from "lib/xod.ts";
+import * as xod from "./xod.ts";
 
 const UrlSchema = zod
   .url()

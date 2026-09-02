@@ -9,3 +9,11 @@ export async function timed<T>(promise: Promise<T>) {
     }),
   };
 }
+
+export async function timeLogged<T>(tag: string, promise: Promise<T>) {
+  const result = await timed(promise);
+
+  console.debug(`[${tag}] duration=${result.duration.total("milliseconds")}ms`);
+
+  return result.value;
+}

@@ -1,15 +1,11 @@
 import * as XML from "@std/xml";
 
-import { formatRssFeed, RssFeed, RssItem } from "lib/rss.ts";
-import { JepIndexItem } from "lib/openjdk-jep/types.ts";
+import { formatRssFeed, RssFeed, RssItem } from "@/lib/rss.ts";
+import { JepIndexItem } from "@/lib/openjdk-jep/types.ts";
 
-import computeHistory from "./_includes/history.ts";
+import { JepHistory } from "./types.ts";
 
-export default function* (
-  data: Lume.Data<JepPageData>,
-): Generator<Partial<Lume.Data>> {
-  const history = computeHistory(data);
-
+export function buildFeed(history: JepHistory) {
   const feed = {
     channels: [{
       title: "OpenJDK JEP Updates",
@@ -28,13 +24,10 @@ export default function* (
     }],
   } satisfies RssFeed;
 
-  yield {
-    url: "./feed.xml",
-    content: XML.stringify(formatRssFeed(feed), {
-      declaration: true,
-      indent: "  ",
-    }),
-  };
+  return XML.stringify(formatRssFeed(feed), {
+    declaration: true,
+    indent: "  ",
+  });
 }
 
 function formatTitle(item: JepIndexItem): string {
