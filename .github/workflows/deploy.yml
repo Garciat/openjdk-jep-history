@@ -39,13 +39,9 @@ jobs:
 
       - name: Build site
         env:
-          PAGES_BASE_URL: ${{ steps.setup-pages.outputs.base_url }}
+          BASE_URL: ${{ steps.setup-pages.outputs.base_url }}
         run: |
-          if [ -n "$PAGES_BASE_URL" ]; then
-            deno task build --location="$PAGES_BASE_URL"
-          else
-            deno task build
-          fi
+          BASE_URL="$BASE_URL" deno task build
 
       - name: Upload artifact
         if: github.event_name != 'pull_request'
