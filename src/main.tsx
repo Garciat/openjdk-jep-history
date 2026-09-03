@@ -13,7 +13,7 @@ const { currentIndex, history } = await fetchAll();
 
 await site({
   [index]: jsx(<HomePage index={currentIndex} />),
-  [SiteConfig.feedPath]: file("application/xml", buildFeed(history)),
+  [SiteConfig.feedPath]: file(buildFeed(history)),
   [SiteConfig.storedHistoryPath]: json(JepHistorySchema.encode(history)),
   [SiteConfig.storedIndexPath]: json(JepIndexSchema.encode(currentIndex)),
 });
