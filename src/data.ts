@@ -4,27 +4,27 @@ import {
   fetchJepIndex,
   parseJepIndex,
 } from "@/lib/openjdk-jep/index.ts";
-import { timeLogged } from "@/lib/timed.ts";
+import { withTimeTag } from "@/lib/timed.ts";
 
 import { SiteConfig } from "./config.ts";
 import { JepHistorySchema } from "./types.ts";
 
 export async function fetchAll() {
   const currentIndex = parseJepIndex(
-    await timeLogged(
-      "fetch OpenJDK JEP index",
+    await withTimeTag(
       fetchJepIndex(),
+      (tag) => console.log(`[fetch]`, `OpenJDK JEP index`, `(${tag})`),
     ),
   );
 
-  const storedIndex = await timeLogged(
-    "fetch stored index",
+  const storedIndex = await withTimeTag(
     fetchStoredIndex(),
+    (tag) => console.log(`[fetch]`, `stored index`, `(${tag})`),
   );
 
-  const storedHistory = await timeLogged(
-    "fetch stored history",
+  const storedHistory = await withTimeTag(
     fetchStoredHistory(),
+    (tag) => console.log(`[fetch]`, `stored history`, `(${tag})`),
   );
 
   const delta = Array.from(computeStateDelta(storedIndex, currentIndex));
@@ -49,7 +49,7 @@ async function fetchStoredHistory() {
   );
 
   if (!res.ok || !res.body) {
-    console.log(`did not fetch stored history`);
+    console.log(`[fetch]`, `did not fetch stored history`);
     return [];
   }
 
@@ -62,7 +62,7 @@ async function fetchStoredIndex() {
   );
 
   if (!res.ok || !res.body) {
-    console.log(`did not fetch stored index`);
+    console.log(`[fetch]`, `did not fetch stored index`);
     return undefined;
   }
 

@@ -11,9 +11,9 @@ import { HomePage } from "./pages/home.tsx";
 
 const { currentIndex, history } = await fetchAll();
 
-await site({
+await site(() => ({
   [index]: jsx(<HomePage index={currentIndex} />),
   [SiteConfig.feedPath]: file(buildFeed(history)),
   [SiteConfig.storedHistoryPath]: json(JepHistorySchema.encode(history)),
   [SiteConfig.storedIndexPath]: json(JepIndexSchema.encode(currentIndex)),
-});
+}));
